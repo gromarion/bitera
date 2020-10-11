@@ -8,7 +8,7 @@ Sends 0.01 Ethereum to a given address, specified by the user.
 
 ### Running from IntelliJ
 
-Application.java has the main() function to run the project and start listening for requests at http://localhost:8080
+Application.java has the main() function to run the project and start listening for requests at http://localhost:8080. The project needs the environment variable **BITERA_EXAMPLE_APP_PRIVATE_KEY** set in order to start up properly, since this is the private key for the account that will be sending funds to the destination address.
 
 ### Endpoints
 

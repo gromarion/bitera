@@ -25,12 +25,10 @@ public class TransactionService {
 
   private final Web3j web3j;
   private final Credentials credentials;
-  private final String account;
 
   private static final String CREDENTIALS_FILE_NAME = "credentials.properties";
   private static final String NETWORK_ADDRESS_PROPERTY_NAME = "networkAddress";
   private static final String PRIVATE_KEY_PROPERTY_NAME = "BITERA_EXAMPLE_APP_PRIVATE_KEY";
-  private static final String ACCOUNT_PROPERTY_NAME = "BITERA_EXAMPLE_APP_ACCOUNT";
   private static final String ETHERSCAN_BASE_URL = "https://ropsten.etherscan.io/address/%s";
   private static final BigDecimal ETH = BigDecimal.valueOf(0.01);
   private static final BigInteger WEI = Convert.toWei(ETH, Unit.ETHER).toBigIntegerExact();
@@ -47,7 +45,6 @@ public class TransactionService {
       this.credentials = Credentials.create(System.getenv(PRIVATE_KEY_PROPERTY_NAME));
       this.web3j = Web3j.build(
           new HttpService(properties.getProperty(NETWORK_ADDRESS_PROPERTY_NAME)));
-      this.account = System.getenv(ACCOUNT_PROPERTY_NAME);
     } else {
       throw new FileNotFoundException(
           String.format("Credentials file '%s' not found in classpath", CREDENTIALS_FILE_NAME));
@@ -62,7 +59,7 @@ public class TransactionService {
     EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransactionData)
         .send();
     Receipt.ReceiptBuilder receiptBuilder = Receipt.builder()
-        .from(account)
+        .from(credentials.getAddress())
         .to(address)
         .value(ETH)
         .etherScanAddress(String.format(ETHERSCAN_BASE_URL, address));
@@ -79,7 +76,7 @@ public class TransactionService {
   @SneakyThrows
   private RawTransaction getTransaction(String address) {
     EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
-        account, DefaultBlockParameterName.PENDING).send();
+        credentials.getAddress(), DefaultBlockParameterName.PENDING).send();
 
     return RawTransaction.createEtherTransaction(
         ethGetTransactionCount.getTransactionCount(),
