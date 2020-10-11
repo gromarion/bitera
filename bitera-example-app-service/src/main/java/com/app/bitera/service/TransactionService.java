@@ -29,8 +29,8 @@ public class TransactionService {
 
   private static final String CREDENTIALS_FILE_NAME = "credentials.properties";
   private static final String NETWORK_ADDRESS_PROPERTY_NAME = "networkAddress";
-  private static final String PRIVATE_KEY_PROPERTY_NAME = "privateKey";
-  private static final String ACCOUNT_PROPERTY_NAME = "account";
+  private static final String PRIVATE_KEY_PROPERTY_NAME = "BITERA_EXAMPLE_APP_PRIVATE_KEY";
+  private static final String ACCOUNT_PROPERTY_NAME = "BITERA_EXAMPLE_APP_ACCOUNT";
   private static final String ETHERSCAN_BASE_URL = "https://ropsten.etherscan.io/address/%s";
   private static final BigDecimal ETH = BigDecimal.valueOf(0.01);
   private static final BigInteger WEI = Convert.toWei(ETH, Unit.ETHER).toBigIntegerExact();
@@ -44,10 +44,10 @@ public class TransactionService {
     if (inputStream != null) {
       Properties properties = new Properties();
       properties.load(inputStream);
-      this.credentials = Credentials.create(properties.getProperty(PRIVATE_KEY_PROPERTY_NAME));
+      this.credentials = Credentials.create(System.getenv(PRIVATE_KEY_PROPERTY_NAME));
       this.web3j = Web3j.build(
           new HttpService(properties.getProperty(NETWORK_ADDRESS_PROPERTY_NAME)));
-      this.account = properties.getProperty(ACCOUNT_PROPERTY_NAME);
+      this.account = System.getenv(ACCOUNT_PROPERTY_NAME);
     } else {
       throw new FileNotFoundException(
           String.format("Credentials file '%s' not found in classpath", CREDENTIALS_FILE_NAME));
@@ -61,15 +61,18 @@ public class TransactionService {
     String signedTransactionData = Numeric.toHexString(signedMessage);
     EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransactionData)
         .send();
-    String transactionHash = ethSendTransaction.getTransactionHash();
-    web3j.ethGetTransactionReceipt(transactionHash).sendAsync();
-
-    return Receipt.builder()
+    Receipt.ReceiptBuilder receiptBuilder = Receipt.builder()
         .from(account)
         .to(address)
         .value(ETH)
-        .transactionId(transactionHash)
-        .etherScanAddress(String.format(ETHERSCAN_BASE_URL, address))
+        .etherScanAddress(String.format(ETHERSCAN_BASE_URL, address));
+
+    if (ethSendTransaction.hasError()) {
+      return receiptBuilder.errorMessage(ethSendTransaction.getError().getMessage())
+          .build();
+    }
+    return receiptBuilder
+        .transactionId(ethSendTransaction.getTransactionHash())
         .build();
   }
 

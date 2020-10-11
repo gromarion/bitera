@@ -13,4 +13,5 @@ public class Receipt {
   private String transactionId;
   private BigDecimal value;
   private String etherScanAddress;
+  private String errorMessage;
 }
