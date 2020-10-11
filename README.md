@@ -8,7 +8,7 @@ Sends 0.01 Ethereum to a given address, specified by the user.
 
 ### Running from IntelliJ
 
-Application.java has the main() function to run the project and start listening for requests
+Application.java has the main() function to run the project and start listening for requests at http://localhost:8080
 
 ### Endpoints
 
