@@ -32,7 +32,8 @@ Application.java has the main() function to run the project and start listening 
     "to": "0xAD87c0E80Ab5E13F15757d5139cc6c6fcb823Be3",
     "transactionId": "0x4a196a42d1b568ea03d3f45b92bfa482f5fb196b44f809b7fbd634bf84eb003b",
     "value": 0.01,
-    "etherScanAddress": "https://ropsten.etherscan.io/address/0xAD87c0E80Ab5E13F15757d5139cc6c6fcb823Be3"
+    "etherScanAddress": "https://ropsten.etherscan.io/address/0xAD87c0E80Ab5E13F15757d5139cc6c6fcb823Be3",
+    "errorMessage": null // If something goes wrong while executing the transaction, a message will tell the user more about the error.
 }
 ```
 
