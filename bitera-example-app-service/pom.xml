@@ -55,7 +55,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <mainClass>Application</mainClass>
+          <mainClass>com.app.bitera.Application</mainClass>
         </configuration>
       </plugin>
     </plugins>
